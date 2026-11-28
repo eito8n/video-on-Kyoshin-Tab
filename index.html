@@ -15,6 +15,7 @@ h2{font-size:17px;margin:0}.row{display:flex;align-items:center;gap:10px;flex-wr
 button,.button{border:0;border-radius:12px;padding:12px 16px;background:var(--accent);color:#091225;font:inherit;font-weight:750;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
 button:disabled{opacity:.45;cursor:not-allowed}.secondary{background:#293752;color:#edf2ff}.outline{background:transparent;color:#dce6ff;border:1px solid #526487}
 input[type=url]{width:100%;border:1px solid #3a4a6b;border-radius:11px;padding:12px;background:#0c1425;color:#f3f6ff;font:inherit}
+.topnav{display:flex;align-items:center;justify-content:space-between;gap:12px}.menu{position:relative}.menu summary{list-style:none;cursor:pointer;border:1px solid #526487;border-radius:11px;padding:9px 12px;color:#e5ecff;font-size:13px;font-weight:700}.menu summary::-webkit-details-marker{display:none}.menuitems{position:absolute;right:0;top:calc(100% + 8px);z-index:10;min-width:210px;padding:7px;background:#18243a;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px #0008}.menuitems a{display:block;padding:11px 12px;border-radius:8px;color:#eaf0ff;text-decoration:none;font-size:14px}.menuitems a:hover{background:#293752}.filelist{margin:10px 0 0;padding-left:20px;color:#cbd6ee;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
 .sitebox{padding:15px;border:1px solid var(--line);border-radius:14px;background:#10182a}.sitebtn{width:100%;padding:15px;background:#dce6ff;color:#101a30}
 .filebox{display:block;border:1.5px dashed #586d9b;border-radius:14px;padding:23px 14px;text-align:center;background:#10182a;cursor:pointer}.filebox input{display:none}.filebox strong{display:block;margin-bottom:5px}.filemeta{margin-top:10px;overflow-wrap:anywhere}
 .status{min-height:22px;margin-top:11px;font-size:13px;color:var(--muted)}.progress{height:8px;background:#0a1120;border-radius:20px;overflow:hidden;margin-top:12px}.bar{height:100%;width:0;background:linear-gradient(90deg,#8aa7ff,#4bd6a0);transition:width .2s}
@@ -23,7 +24,17 @@ input[type=url]{width:100%;border:1px solid #3a4a6b;border-radius:11px;padding:1
 @media(max-width:520px){.card{padding:16px}.row button{flex:1}}
 </style></head>
 <body><main>
-<div class="eyebrow">Youtube for 京進iPad</div><header class="hero"><h1>YouTube動画を京進のiPadで見よう！</h1><p>保存したYouTubeの動画をiPadで開ける状態にします</p></header>
+<div class="topnav">
+  <div class="eyebrow">Youtube for 京進iPad</div>
+  <details class="menu"><summary aria-label="メニュー">☰ メニュー</summary>
+    <nav class="menuitems">
+      <a href="https://eito8n.github.io/video-on-Kyoshin-Tab/terms.html" target="_blank" rel="noopener noreferrer">利用規約</a>
+      <a href="https://eito8n.github.io/video-on-Kyoshin-Tab/privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+      <a href="https://github.com/eito8n/video-on-Kyoshin-Tab" target="_blank" rel="noopener noreferrer">GitHubリポジトリ ↗</a>
+    </nav>
+  </details>
+</div>
+<header class="hero"><h1>YouTube動画を京進のiPadで見よう！</h1><p>保存した動画をGoogle Driveにアップロードして共有できます</p></header>
 
 <section class="card">
 <div class="head"><span class="num">01</span><h2>動画保存サイト</h2></div>
@@ -38,58 +49,182 @@ input[type=url]{width:100%;border:1px solid #3a4a6b;border-radius:11px;padding:1
 </section>
 
 <section class="card"><div class="head"><span class="num">02</span><h2>Googleアカウント</h2></div>
-<div class="row"><div class="grow"><div id="accountStatus" class="muted">ログインしていません</div></div><button id="loginBtn" onclick="login()">Googleでログイン</button><button id="logoutBtn" class="secondary" onclick="logout()" hidden>ログアウト</button></div></section>
+<div class="row"><div class="grow"><div id="accountStatus" class="muted">Googleのログイン状態を確認しています…</div></div><button id="loginBtn" onclick="login()">Googleでログイン</button><button id="logoutBtn" class="secondary" onclick="logout()" hidden>ログアウト</button></div><p class="muted">次回アクセス時はGoogleのセッションと以前の許可を確認し、自動で再接続を試みます。再認証が必要な場合はログインボタンを押してください。</p></section>
 
 <section class="card"><div class="head"><span class="num">03</span><h2>保存した動画を選択</h2></div>
-<label class="filebox"><input id="fileInput" type="file" accept="video/*"><strong>動画ファイルを選ぶ</strong><span class="muted">端末に保存した動画を選択（MP4など）</span></label>
+<label class="filebox"><input id="fileInput" type="file" accept="video/*" multiple><strong>動画ファイルをまとめて選ぶ</strong><span class="muted">複数選択OK（MP4など）</span></label>
 <div id="fileMeta" class="filemeta muted">ファイル未選択</div>
-<div class="row" style="margin-top:15px"><button id="uploadBtn" onclick="startUpload()" disabled>Driveにアップロード</button><span class="muted">アップロード後に自動共有</span></div>
+<div class="row" style="margin-top:15px"><button id="uploadBtn" onclick="startUpload()" disabled>フォルダにまとめてアップロード</button><span class="muted">専用フォルダを作成して一括共有</span></div>
 <div class="progress"><div id="bar" class="bar"></div></div><div id="uploadStatus" class="status" aria-live="polite"></div></section>
 
 <section class="card result" id="result"><div class="head" style="justify-content:center"><span class="num">04</span><h2>共有リンク・QRコード</h2></div>
 <div id="resultName" class="muted"></div><div class="qrwrap"><div id="qrcode"></div></div><div id="shareLink" class="sharelink"></div>
-<div class="row" style="justify-content:center"><button class="secondary" onclick="copyLink()">リンクをコピー</button><button class="secondary" onclick="downloadQR()">QR画像を保存</button><button onclick="openDrive()">動画を開く ↗</button></div><p class="muted">QRコードを読み取ると共有リンクが開くよ。</p></section>
+<div class="row" style="justify-content:center"><button class="secondary" onclick="copyLink()">リンクをコピー</button><button class="secondary" onclick="downloadQR()">QR画像を保存</button><button onclick="openDrive()">共有フォルダを開く ↗</button></div><p class="muted">QRコードを読み取ると共有フォルダが開くよ。フォルダ内の動画をまとめて確認できます。</p></section>
 
 <footer><div class="note">「リンクを知っている全員」にすると、リンクを受け取った人が動画を閲覧できる。公開していいやつだけ公開しよう！</div>
-<p>Google OAuthを利用し、京進iPad研究会はGoogleのパスワードを取得・保存しません。動画はログインした利用者自身のDriveに保存されます。</p>
-<p>外部の動画保存サイトは別サービスです。このアプリは外部サイトから動画を自動取得しません。サイトの利用条件・著作権・動画の保存許可を確認して利用してください。あ、自分はあれいつも使ってるから安心して</p></footer>
+<p>Google OAuthを利用し、アプリはGoogleのパスワードを取得・保存しません。動画はログインした利用者自身のDriveに保存されます。複数動画を選ぶと専用フォルダにまとめて保存し、フォルダを共有します。</p>
+<p>外部の動画保存サイトは別サービスです。このアプリは外部サイトから動画を自動取得しません。サイトの利用条件・著作権・動画の保存許可を確認して利用してください。</p>
+<p><a href="https://eito8n.github.io/video-on-Kyoshin-Tab/privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a> ・ <a href="https://eito8n.github.io/video-on-Kyoshin-Tab/terms.html" target="_blank" rel="noopener noreferrer">利用規約</a> ・ <a href="https://github.com/eito8n/video-on-Kyoshin-Tab" target="_blank" rel="noopener noreferrer">GitHub</a></p></footer>
 
-作成：京進iPad研究会<br>
-<a href="https://line.me/ti/g2/47dcSAnWe4eHEcs2o6QJNuGcF_TZvRMl7eVZeg?utm_source=invitation&utm_medium=link_copy&utm_campaign=default">LINEオプチャ</a>
+コミットv3,アプリバージョン1.0test<br>
+<a href="https://line.me/ti/g2/47dcSAnWe4eHEcs2o6QJNuGcF_TZvRMl7eVZeg?utm_source=invitation&utm_medium=link_copy&utm_campaign=default">オプチャ</a>
 </main>
 <script>
-/* Google Cloud: Drive APIを有効化し、OAuthウェブクライアントを作成。
-   承認済みJavaScript生成元に公開サイトのHTTPSオリジンを登録し、CLIENT_IDを置換。 */
-const CLIENT_ID="ここにGoogle OAuthクライアントIDを貼り付け.apps.googleusercontent.com";
+/* Google CloudでDrive APIを有効化し、OAuthウェブクライアントのCLIENT_IDを設定してください。
+   承認済みJavaScript生成元には https://eito8n.github.io を登録します。 */
+const CLIENT_ID="365151612694-i8jdbikl76kj3copsqbhe1rjo99kpn3j.apps.googleusercontent.com";
 const DEFAULT_SITE="https://m.freemake.com/jp/free_video_downloader/";
 const SCOPES="https://www.googleapis.com/auth/drive.file";
-let tokenClient=null,accessToken=null,selectedFile=null,currentLink="";
-const $=id=>document.getElementById(id),setStatus=(id,msg)=>$(id).textContent=msg;
+const $=id=>document.getElementById(id);
+let tokenClient=null,accessToken=null,selectedFiles=[],currentLink="",authReady=false,manualLogout=false;
+
 function validHttpsUrl(value){try{const u=new URL(value);return u.protocol==="https:"&&!!u.hostname;}catch{return false;}}
 function applySite(url){$("siteUrl").value=url;$("openSite").href=url;let host="動画保存サイト";try{host=new URL(url).hostname;}catch{}$("siteName").textContent=url===DEFAULT_SITE?"Freemake Video Downloader":host;}
 function saveSite(){const url=$("siteUrl").value.trim();if(!validHttpsUrl(url)){setStatus("siteStatus","HTTPSで始まる正しいURLを入力してください");return;}localStorage.setItem("videoToQrSite",url);applySite(url);setStatus("siteStatus","保存しました。このブラウザで次回も使えます。");}
 function resetSite(){localStorage.removeItem("videoToQrSite");applySite(DEFAULT_SITE);setStatus("siteStatus","デフォルトのFreemakeに戻りました");}
 (()=>{const saved=localStorage.getItem("videoToQrSite");applySite(saved&&validHttpsUrl(saved)?saved:DEFAULT_SITE);})();
-function initAuth(){if(!window.google?.accounts?.oauth2)return false;if(!tokenClient)tokenClient=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPES,callback:r=>{if(r.error){setStatus("accountStatus","ログインエラー: "+r.error);return;}accessToken=r.access_token;$("loginBtn").hidden=true;$("logoutBtn").hidden=false;setStatus("accountStatus","Googleにログイン済み。自分のDriveに保存できます。");$("uploadBtn").disabled=!selectedFile;}});return true;}
-function login(){if(CLIENT_ID.startsWith("ここに")){alert("HTML内の CLIENT_ID をGoogle Cloudで取得した値に置き換えてください（GitHub Pagesの人はissueに報告してください）");return;}if(!initAuth()){alert("Google認証を読み込み中です。少し待ってから再度押してください");return;}tokenClient.requestAccessToken({prompt:"consent"});}
-function logout(){if(accessToken&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(accessToken,()=>{});accessToken=null;$("loginBtn").hidden=false;$("logoutBtn").hidden=true;$("uploadBtn").disabled=true;setStatus("accountStatus","ログアウトしました");}
-$("fileInput").addEventListener("change",e=>{selectedFile=e.target.files[0]||null;$("fileMeta").textContent=selectedFile?`${selectedFile.name} ・ ${formatBytes(selectedFile.size)} ・ ${selectedFile.type||"形式不明"}`:"ファイル未選択";$("uploadBtn").disabled=!(accessToken&&selectedFile);$("result").style.display="none";});
+const setStatus=(id,msg)=>$(id).textContent=msg;
+
+function setSignedIn(message="Googleに接続済み。自分のDriveに保存できます。"){
+  $("loginBtn").hidden=true;$("logoutBtn").hidden=false;
+  setStatus("accountStatus",message);
+  $("uploadBtn").disabled=selectedFiles.length===0;
+}
+function setSignedOut(message="ログインしていません"){
+  $("loginBtn").hidden=false;$("logoutBtn").hidden=true;
+  setStatus("accountStatus",message);
+  $("uploadBtn").disabled=true;
+}
+function initAuth(){
+  if(!window.google?.accounts?.oauth2)return false;
+  if(!tokenClient){
+    tokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:CLIENT_ID,scope:SCOPES,
+      callback:r=>{
+        if(r.error){
+          accessToken=null;
+          setSignedOut(manualLogout?"ログアウトしました":"自動再接続できませんでした。Googleでログインしてください。");
+          return;
+        }
+        accessToken=r.access_token;
+        manualLogout=false;
+        setSignedIn("Googleに接続済み。自分のDriveに保存できます。");
+      }
+    });
+  }
+  authReady=true;
+  return true;
+}
+function login(){
+  if(!initAuth()){alert("Google認証を読み込み中です。少し待ってから再度押してください");return;}
+  manualLogout=false;
+  tokenClient.requestAccessToken({prompt:"consent"});
+}
+function logout(){
+  manualLogout=true;
+  if(accessToken&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(accessToken,()=>{});
+  accessToken=null;
+  setSignedOut("ログアウトしました");
+}
+/* アクセストークンは保存しない。前回同意済みのGoogleセッションが利用可能なら、
+   prompt:'' で再接続を試し、失敗した場合は手動ログインに切り替える。 */
+function tryRestoreSession(){
+  if(manualLogout||!initAuth())return;
+  setStatus("accountStatus","前回のGoogleログインを確認しています…");
+  tokenClient.requestAccessToken({prompt:""});
+}
+$("fileInput").addEventListener("change",e=>{
+  selectedFiles=Array.from(e.target.files||[]);
+  $("fileMeta").innerHTML="";
+  if(!selectedFiles.length){$("fileMeta").textContent="ファイル未選択";}
+  else{
+    const total=selectedFiles.reduce((n,f)=>n+f.size,0);
+    const summary=document.createElement("div");
+    summary.textContent=`${selectedFiles.length}個のファイル ・ 合計 ${formatBytes(total)}`;
+    $("fileMeta").appendChild(summary);
+    const list=document.createElement("ul");list.className="filelist";
+    selectedFiles.forEach(f=>{const li=document.createElement("li");li.textContent=`${f.name}（${formatBytes(f.size)}）`;list.appendChild(li);});
+    $("fileMeta").appendChild(list);
+  }
+  $("uploadBtn").disabled=!(accessToken&&selectedFiles.length);
+  $("result").style.display="none";
+});
 function formatBytes(n){if(n<1024)return n+" B";const u=["KB","MB","GB","TB"];let i=-1;do{n/=1024;i++;}while(n>=1024&&i<u.length-1);return n.toFixed(1)+" "+u[i];}
-async function apiFetch(url,options={}){return fetch(url,{...options,headers:{...(options.headers||{}),Authorization:"Bearer "+accessToken}});}
+async function apiFetch(url,options={}){
+  if(!accessToken)throw new Error("Googleに接続されていません。ログインしてください。");
+  return fetch(url,{...options,headers:{...(options.headers||{}),Authorization:"Bearer "+accessToken}});
+}
 async function readError(r){try{const j=await r.json();return j.error?.message||r.statusText;}catch{return r.statusText;}}
-async function startUpload(){if(!accessToken||!selectedFile)return;$("uploadBtn").disabled=true;$("bar").style.width="0%";$("result").style.display="none";try{
-setStatus("uploadStatus","アップロードの準備中");
-const start=await apiFetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,name,webViewLink",{method:"POST",headers:{"Content-Type":"application/json; charset=UTF-8","X-Upload-Content-Type":selectedFile.type||"application/octet-stream","X-Upload-Content-Length":String(selectedFile.size)},body:JSON.stringify({name:selectedFile.name,mimeType:selectedFile.type||"application/octet-stream"})});
-if(!start.ok)throw new Error("アップロード開始に失敗: "+await readError(start));const uploadUrl=start.headers.get("Location");if(!uploadUrl)throw new Error("アップロードURLを取得できませんでした");
-const fileData=await uploadBlob(uploadUrl,selectedFile);setStatus("uploadStatus","共有設定中…");
-const perm=await apiFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileData.id)}/permissions`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"anyone",role:"reader"})});
-if(!perm.ok)throw new Error("動画は保存されたけど共有設定に失敗しました: "+await readError(perm));
-currentLink=fileData.webViewLink||`https://drive.google.com/file/d/${fileData.id}/view`;showResult(fileData.name,currentLink);setStatus("uploadStatus","アップロードと共有設定が完了！");$("bar").style.width="100%";
-}catch(err){console.error(err);setStatus("uploadStatus","エラー: "+err.message);}finally{$("uploadBtn").disabled=!(accessToken&&selectedFile);}}
-function uploadBlob(url,file){return new Promise((resolve,reject)=>{const xhr=new XMLHttpRequest();xhr.open("PUT",url);xhr.setRequestHeader("Content-Type",file.type||"application/octet-stream");xhr.upload.onprogress=e=>{if(e.lengthComputable){const pct=Math.round(e.loaded/e.total*100);$("bar").style.width=pct+"%";setStatus("uploadStatus",`アップロード中… ${pct}%（${formatBytes(e.loaded)} / ${formatBytes(e.total)}）`);}};xhr.onload=()=>{if(xhr.status>=200&&xhr.status<300){try{resolve(JSON.parse(xhr.responseText));}catch{reject(new Error("Driveからの応答を読み取れませんでした。"));}}else reject(new Error("アップロード失敗: HTTP "+xhr.status+" "+xhr.responseText));};xhr.onerror=()=>reject(new Error("通信エラー。ネット接続を確認してください"));xhr.onabort=()=>reject(new Error("アップロードが中断されました。"));xhr.send(file);});}
-function showResult(name,link){$("resultName").textContent=name;$("shareLink").textContent=link;$("qrcode").innerHTML="";if(!window.QRCode)throw new Error("QRコードライブラリを読み込めませんでした");new QRCode($("qrcode"),{text:link,width:220,height:220,colorDark:"#111827",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});$("result").style.display="block";$("result").scrollIntoView({behavior:"smooth",block:"center"});}
-async function copyLink(){try{await navigator.clipboard.writeText(currentLink);setStatus("uploadStatus","共有リンクをコピーしました");}catch{prompt("このリンクをコピーしてください",currentLink);}}
-function downloadQR(){const c=$("qrcode").querySelector("canvas"),img=$("qrcode").querySelector("img"),data=c?c.toDataURL("image/png"):img?.src;if(!data){alert("QRコードがまだできていません");return;}const a=document.createElement("a");a.href=data;a.download="video-share-qr.png";a.click();}
+async function createFolder(name){
+  const r=await apiFetch("https://www.googleapis.com/drive/v3/files?fields=id,name,webViewLink",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({name,mimeType:"application/vnd.google-apps.folder"})
+  });
+  if(!r.ok)throw new Error("フォルダ作成に失敗: "+await readError(r));
+  return r.json();
+}
+async function uploadOne(folderId,file,index,total){
+  const start=await apiFetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,name",{
+    method:"POST",
+    headers:{"Content-Type":"application/json; charset=UTF-8","X-Upload-Content-Type":file.type||"application/octet-stream","X-Upload-Content-Length":String(file.size)},
+    body:JSON.stringify({name:file.name,mimeType:file.type||"application/octet-stream",parents:[folderId]})
+  });
+  if(!start.ok)throw new Error(`${file.name} のアップロード開始に失敗: `+await readError(start));
+  const uploadUrl=start.headers.get("Location");
+  if(!uploadUrl)throw new Error("アップロードURLを取得できませんでした");
+  return uploadBlob(uploadUrl,file,(pct,loaded)=>{
+    const overall=((index+pct/100)/total)*100;
+    $("bar").style.width=overall+"%";
+    setStatus("uploadStatus",`アップロード中… ${index+1}/${total}個目：${file.name}（${pct}%・${formatBytes(loaded)}）`);
+  });
+}
+function uploadBlob(url,file,onProgress){
+  return new Promise((resolve,reject)=>{
+    const xhr=new XMLHttpRequest();xhr.open("PUT",url);
+    xhr.setRequestHeader("Content-Type",file.type||"application/octet-stream");
+    xhr.upload.onprogress=e=>{if(e.lengthComputable&&onProgress)onProgress(Math.round(e.loaded/e.total*100),e.loaded);};
+    xhr.onload=()=>{if(xhr.status>=200&&xhr.status<300){try{resolve(JSON.parse(xhr.responseText));}catch{reject(new Error("Driveからの応答を読み取れませんでした。"));}}else reject(new Error("アップロード失敗: HTTP "+xhr.status+" "+xhr.responseText));};
+    xhr.onerror=()=>reject(new Error("通信エラー。ネット接続を確認してください"));
+    xhr.onabort=()=>reject(new Error("アップロードが中断されました。"));
+    xhr.send(file);
+  });
+}
+async function shareFolder(folderId){
+  const r=await apiFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(folderId)}/permissions`,{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({type:"anyone",role:"reader"})
+  });
+  if(!r.ok)throw new Error("フォルダは作成されましたが共有設定に失敗しました: "+await readError(r));
+}
+async function startUpload(){
+  if(!accessToken||!selectedFiles.length)return;
+  $("uploadBtn").disabled=true;$("bar").style.width="0%";$("result").style.display="none";
+  try{
+    setStatus("uploadStatus","Google Driveにフォルダを作成中…");
+    const folderName=`動画まとめ_${new Date().toLocaleDateString("ja-JP").replaceAll("/","-")}_${selectedFiles.length}本`;
+    const folder=await createFolder(folderName);
+    for(let i=0;i<selectedFiles.length;i++)await uploadOne(folder.id,selectedFiles[i],i,selectedFiles.length);
+    setStatus("uploadStatus","フォルダを共有設定中…");
+    await shareFolder(folder.id);
+    currentLink=folder.webViewLink||`https://drive.google.com/drive/folders/${folder.id}`;
+    showResult(folder.name,currentLink);
+    setStatus("uploadStatus","すべての動画をフォルダにアップロードし、フォルダを共有しました！");
+    $("bar").style.width="100%";
+  }catch(err){
+    console.error(err);setStatus("uploadStatus","エラー: "+err.message+"（途中まで作成されたフォルダやファイルはDriveに残っている場合があります）");
+  }finally{$("uploadBtn").disabled=!(accessToken&&selectedFiles.length);}
+}
+function showResult(name,link){
+  $("resultName").textContent=name;$("shareLink").textContent=link;$("qrcode").innerHTML="";
+  if(!window.QRCode)throw new Error("QRコードライブラリを読み込めませんでした");
+  new QRCode($("qrcode"),{text:link,width:220,height:220,colorDark:"#111827",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
+  $("result").style.display="block";$("result").scrollIntoView({behavior:"smooth",block:"center"});
+}
+async function copyLink(){try{await navigator.clipboard.writeText(currentLink);setStatus("uploadStatus","共有フォルダのリンクをコピーしました");}catch{prompt("このリンクをコピーしてください",currentLink);}}
+function downloadQR(){const c=$("qrcode").querySelector("canvas"),img=$("qrcode").querySelector("img"),data=c?c.toDataURL("image/png"):img?.src;if(!data){alert("QRコードがまだできていません");return;}const a=document.createElement("a");a.href=data;a.download="video-folder-qr.png";a.click();}
 function openDrive(){if(currentLink)window.open(currentLink,"_blank","noopener,noreferrer");}
-window.addEventListener("load",()=>setTimeout(()=>{if(window.google?.accounts?.oauth2)initAuth();},350));
+window.addEventListener("load",()=>{
+  const waitForGoogle=()=>{if(initAuth()){tryRestoreSession();}else setTimeout(waitForGoogle,250);};
+  waitForGoogle();
+});
 </script></body></html>
